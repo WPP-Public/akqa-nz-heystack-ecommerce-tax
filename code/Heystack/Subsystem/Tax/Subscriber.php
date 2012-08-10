@@ -17,6 +17,7 @@ use Heystack\Subsystem\Ecommerce\Currency\Events as CurrencyEvents;
 use Heystack\Subsystem\Ecommerce\Locale\Events as LocaleEvents;
 use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
 use Heystack\Subsystem\Products\ProductHolder\Events as ProductHolderEvents;
+use Heystack\Subsystem\Vouchers\Events as VoucherEvents;
 
 use Heystack\Subsystem\Tax\Interfaces\TaxHandlerInterface;
 
@@ -75,6 +76,7 @@ class Subscriber implements EventSubscriberInterface
             CurrencyEvents::CHANGED        => array('onUpdateTotal', 0),
             LocaleEvents::CHANGED          => array('onUpdateTotal', 0),
             ProductHolderEvents::UPDATED   => array('onUpdateTotal', 0),
+            VoucherEvents::TOTAL_UPDATED   => array('onUpdateTotal', 0),
             Events::TOTAL_UPDATED          => array('onTotalUpdated', 0),
             Backend::IDENTIFIER . '.' . TransactionEvents::STORED      => array('onTransactionStored', 0)
         );
