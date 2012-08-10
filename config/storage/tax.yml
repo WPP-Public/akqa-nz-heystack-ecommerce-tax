@@ -1,0 +1,6 @@
+data_provider_id: taxhandler
+id: TaxHandler
+flat:
+  Total: Decimal(10,2)
+related:
+parent:

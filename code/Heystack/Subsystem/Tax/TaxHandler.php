@@ -17,11 +17,16 @@ use Heystack\Subsystem\Ecommerce\Services as EcommerceServices;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializable
+use Heystack\Subsystem\Core\Storage\StorableInterface;
+use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
+use Heystack\Subsystem\Core\Storage\Traits\ParentReferenceTrait;
+
+class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializable, StorableInterface
 {
     use TransactionModifierStateTrait;
     use TransactionModifierSerializeTrait;
     use TaxConfigTrait;
+    use ParentReferenceTrait;
     
     const IDENTIFIER = 'taxhandler';
     const TOTAL_KEY = 'total';
@@ -101,4 +106,42 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
         
         return TransactionModifierTypes::NEUTRAL;
     }
+    
+    public function getStorableData()
+    {
+
+       return array(
+           'id' => 'ShippingHandler',
+           'parent' => true,
+           'flat' => array(
+               'ParentID' => $this->parentReference,
+               'AddressLine1' => $this->AddressLine1,
+               'AddressLine2' => $this->AddressLine2,
+               'City' => $this->City,
+               'Postcode' => $this->Postcode,
+               'Country' => $this->Country->getName(),
+               'Title' => $this->Title,
+               'FirstName' => $this->FirstName,
+               'Surname' => $this->Surname,
+               'Email' => $this->Email,
+               'Phone' => $this->Phone,
+               'Total' => $this->getTotal()
+           )
+       );
+
+    }
+
+    public function getStorableIdentifier()
+    {
+
+        return self::IDENTIFIER;
+
+    }
+
+    public function getStorableBackendIdentifiers()
+    {
+        return array(
+            Backend::IDENTIFIER
+        );
+    }    
 }
