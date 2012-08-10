@@ -1,5 +1,5 @@
 data_provider_id: taxhandler
-id: TaxHandler
+id: Tax
 flat:
   Total: Decimal(10,2)
 related:

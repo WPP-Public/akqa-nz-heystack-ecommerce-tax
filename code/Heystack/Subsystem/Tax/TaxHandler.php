@@ -111,20 +111,9 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
     {
 
        return array(
-           'id' => 'ShippingHandler',
+           'id' => 'Tax',
            'parent' => true,
            'flat' => array(
-               'ParentID' => $this->parentReference,
-               'AddressLine1' => $this->AddressLine1,
-               'AddressLine2' => $this->AddressLine2,
-               'City' => $this->City,
-               'Postcode' => $this->Postcode,
-               'Country' => $this->Country->getName(),
-               'Title' => $this->Title,
-               'FirstName' => $this->FirstName,
-               'Surname' => $this->Surname,
-               'Email' => $this->Email,
-               'Phone' => $this->Phone,
                'Total' => $this->getTotal()
            )
        );
@@ -136,6 +125,17 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
 
         return self::IDENTIFIER;
 
+    }
+    
+    /**
+     * Get the name of the schema this system relates to
+     * @return string
+     */
+    public function getSchemaName()
+    {
+        
+        return 'Tax';
+        
     }
 
     public function getStorableBackendIdentifiers()
