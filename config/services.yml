@@ -1,0 +1,25 @@
+parameters:
+  tax_handler.class: Heystack\Subsystem\Tax\TaxHandler
+  tax_handler_subscriber.class: Heystack\Subsystem\Tax\Subscriber
+  
+services:
+  tax_handler:
+    class: %tax_handler.class%
+    arguments: [ @state, @event_dispatcher, @locale_handler ]
+    calls:
+      - [ restoreState ]
+      
+  tax_handler_subscriber:
+    class: %tax_handler_subscriber.class%
+    arguments: [ @event_dispatcher, @tax_handler, @storage ]   
+    
+  transaction:
+    class: %transaction.class%
+    calls:
+      - [ addModifier, [ @tax_handler ] ]
+      
+  event_dispatcher:
+    class: %event_dispatcher.class%
+    calls: 
+      - [ addSubscriber, [ @tax_handler_subscriber ] ]        
+

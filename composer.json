@@ -1,0 +1,20 @@
+{
+    "name": "heystack/ecommerce-tax",
+    "type": "silverstripe-module",
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/heyday/installers.git"
+        }
+    ],
+    "require": {        
+        "php": ">=5.4.0",
+        "composer/installers": "dev-silverstripe"
+    },
+    "autoload": {
+        "psr-0": {
+            "Heystack": "code/"
+        }
+    },
+    "minimum-stability": "dev"
+}
