@@ -12,7 +12,7 @@ use Heystack\Subsystem\Tax\Traits\TaxConfigTrait;
 use Heystack\Subsystem\Ecommerce\Transaction\TransactionModifierTypes;
 use Heystack\Subsystem\Ecommerce\Transaction\Traits\TransactionModifierStateTrait;
 use Heystack\Subsystem\Ecommerce\Transaction\Traits\TransactionModifierSerializeTrait;
-use Heystack\Subsystem\Ecommerce\Locale\Interfaces\LocaleHandlerInterface;
+use Heystack\Subsystem\Ecommerce\Locale\Interfaces\LocaleServiceInterface;
 use Heystack\Subsystem\Ecommerce\Services as EcommerceServices;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -38,7 +38,7 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
     protected $eventService;
     protected $localeService;
     
-    public function __construct(State $stateService, EventDispatcherInterface $eventService, LocaleHandlerInterface $localeService)
+    public function __construct(State $stateService, EventDispatcherInterface $eventService, LocaleServiceInterface $localeService)
     {
         $this->stateService = $stateService;
         $this->eventService = $eventService;

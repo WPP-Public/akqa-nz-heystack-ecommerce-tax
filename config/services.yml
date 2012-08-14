@@ -5,7 +5,7 @@ parameters:
 services:
   tax_handler:
     class: %tax_handler.class%
-    arguments: [ @state, @event_dispatcher, @locale_handler ]
+    arguments: [ @state, @event_dispatcher, @locale_service ]
     calls:
       - [ restoreState ]
       
