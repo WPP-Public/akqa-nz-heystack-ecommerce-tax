@@ -53,7 +53,7 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
 
         $this->processConfig($config, $container);
     }
-    
+
     /**
      * {@inheritdoc}
      *
@@ -72,7 +72,7 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
 
            $container->getDefinition(Services::TAX_HANDLER)->addMethodCall('setConfig', array($config['config']));
 
-        }else{
+        } else {
             throw new \Exception('Please configure the tax subsystem on your /mysite/config/services.yml file');
         }
     }

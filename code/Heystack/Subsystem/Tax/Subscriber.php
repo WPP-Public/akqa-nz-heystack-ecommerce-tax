@@ -55,9 +55,9 @@ class Subscriber implements EventSubscriberInterface
 
     /**
      * Creates the ShippingHandler Subscriber object
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface      $eventService
-     * @param \Heystack\Subsystem\Tax\Interfaces\TaxHandlerInterface           $taxService
-     * @param \Heystack\Subsystem\Core\Storage\Storage                         $storageService
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventService
+     * @param \Heystack\Subsystem\Tax\Interfaces\TaxHandlerInterface      $taxService
+     * @param \Heystack\Subsystem\Core\Storage\Storage                    $storageService
      */
     public function __construct(EventDispatcherInterface $eventService, TaxHandlerInterface $taxService,  Storage $storageService)
     {
@@ -81,7 +81,7 @@ class Subscriber implements EventSubscriberInterface
             Backend::IDENTIFIER . '.' . TransactionEvents::STORED      => array('onTransactionStored', 0)
         );
     }
-    
+
     /**
      * Called to update the TaxHandler's total
      */
@@ -106,11 +106,11 @@ class Subscriber implements EventSubscriberInterface
      */
     public function onTransactionStored(StorageEvent $event)
     {
-        
+
 //        $this->shippingService->setParentReference($event->getParentReference());
 //
 //        $this->storageService->process($this->shippingService);
-//        
+//
 //        $this->eventService->dispatch(Events::STORED);
     }
 
