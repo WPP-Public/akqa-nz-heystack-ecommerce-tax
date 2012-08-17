@@ -10,6 +10,8 @@
  */
 namespace Heystack\Subsystem\Tax\Traits;
 
+use Heystack\Subsystem\Core\Exception\ConfigurationException;
+
 /**
  * Provides an implementation of setting and getting the configuration for use on a TaxHandler class
  *
@@ -45,19 +47,19 @@ trait TaxConfigTrait
                             $this->data[self::CONFIG_KEY][$key] = $value;
 
                         } else {
-                            throw new \Exception('Invalid Tax Configuration: ' . $key . ' should have a numeric `Rate`');
+                            throw new ConfigurationException('Tax ' . $key . ' should have a numeric `Rate`');
                         }
 
                     } else {
-                        throw new \Exception('Invalid Tax Configuration: ' . $key . ' should have a `Type` of `Exclusive` or `Inclusive`');
+                        throw new ConfigurationException('Tax ' . $key . ' should have a `Type` of `Exclusive` or `Inclusive`');
                     }
 
                 } else {
-                    throw new \Exception('Invalid Tax Configuration: ' . $key . ' should have an array with `Rate` & `Type` keys');
+                    throw new ConfigurationException('Tax ' . $key . ' should have an array with `Rate` & `Type` keys');
                 }
 
             } else {
-                throw new \Exception('Invalid Tax Configuration: ' . $key . ' is not a valid ISO 3166 country code');
+                throw new ConfigurationException('Tax ' . $key . ' is not a valid ISO 3166 country code');
             }
 
         }
