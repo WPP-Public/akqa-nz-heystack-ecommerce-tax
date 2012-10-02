@@ -5,7 +5,7 @@ parameters:
 services:
   tax_handler:
     class: %tax_handler.class%
-    arguments: [ @state, @event_dispatcher, @locale_handler ]
+    arguments: [ @state, @event_dispatcher, @locale_service ]
     calls:
       - [ restoreState ]
       
@@ -23,3 +23,14 @@ services:
     calls: 
       - [ addSubscriber, [ @tax_handler_subscriber ] ]        
 
+      
+  dataobject_generator:
+    class: %dataobject_generator.class%
+    calls:
+      - [ addYamlSchema, [ ecommerce-tax/config/storage/tax.yml, 1 ] ]
+      - [ addYamlSchema, [ ecommerce-tax/config/storage/tax_transaction.yml ] ]
+      
+  ss_orm_backend:
+    class: %ss_orm_backend.class%
+    calls:
+      - [ addDataProvider, [ @tax_handler ] ]

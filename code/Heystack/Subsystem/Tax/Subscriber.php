@@ -17,6 +17,7 @@ use Heystack\Subsystem\Ecommerce\Currency\Events as CurrencyEvents;
 use Heystack\Subsystem\Ecommerce\Locale\Events as LocaleEvents;
 use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
 use Heystack\Subsystem\Products\ProductHolder\Events as ProductHolderEvents;
+use Heystack\Subsystem\Vouchers\Events as VoucherEvents;
 
 use Heystack\Subsystem\Tax\Interfaces\TaxHandlerInterface;
 
@@ -54,9 +55,9 @@ class Subscriber implements EventSubscriberInterface
 
     /**
      * Creates the ShippingHandler Subscriber object
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface      $eventService
-     * @param \Heystack\Subsystem\Tax\Interfaces\TaxHandlerInterface           $taxService
-     * @param \Heystack\Subsystem\Core\Storage\Storage                         $storageService
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventService
+     * @param \Heystack\Subsystem\Tax\Interfaces\TaxHandlerInterface      $taxService
+     * @param \Heystack\Subsystem\Core\Storage\Storage                    $storageService
      */
     public function __construct(EventDispatcherInterface $eventService, TaxHandlerInterface $taxService,  Storage $storageService)
     {
@@ -75,11 +76,12 @@ class Subscriber implements EventSubscriberInterface
             CurrencyEvents::CHANGED        => array('onUpdateTotal', 0),
             LocaleEvents::CHANGED          => array('onUpdateTotal', 0),
             ProductHolderEvents::UPDATED   => array('onUpdateTotal', 0),
+            VoucherEvents::TOTAL_UPDATED   => array('onUpdateTotal', 0),
             Events::TOTAL_UPDATED          => array('onTotalUpdated', 0),
             Backend::IDENTIFIER . '.' . TransactionEvents::STORED      => array('onTransactionStored', 0)
         );
     }
-    
+
     /**
      * Called to update the TaxHandler's total
      */
@@ -104,11 +106,11 @@ class Subscriber implements EventSubscriberInterface
      */
     public function onTransactionStored(StorageEvent $event)
     {
-        
+
 //        $this->shippingService->setParentReference($event->getParentReference());
 //
 //        $this->storageService->process($this->shippingService);
-//        
+//
 //        $this->eventService->dispatch(Events::STORED);
     }
 
