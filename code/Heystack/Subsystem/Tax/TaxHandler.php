@@ -71,9 +71,11 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
 
             $rate = isset($this->data[self::CONFIG_KEY][$countryCode]['Rate']) ? $this->data[self::CONFIG_KEY][$countryCode]['Rate'] : 0;
 
-            $taxable = $transaction->getTotalWithExclusions(array($this->getIdentifier()));
+            $productHolder = ServiceStore::getService(ProductServices::PRODUCTHOLDER);
 
-            $total = $taxable * $rate;
+            $taxable = $transaction->getTotalWithExclusions(array($this->getIdentifier())) - $productHolder->getTaxExemptTotal();
+
+            $total = ($taxable / ($rate + 1)) * $rate;
 
         }
 
