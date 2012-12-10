@@ -14,6 +14,7 @@ use Heystack\Subsystem\Ecommerce\Transaction\Traits\TransactionModifierStateTrai
 use Heystack\Subsystem\Ecommerce\Transaction\Traits\TransactionModifierSerializeTrait;
 use Heystack\Subsystem\Ecommerce\Locale\Interfaces\LocaleServiceInterface;
 use Heystack\Subsystem\Ecommerce\Services as EcommerceServices;
+use Heystack\Subsystem\Products\Services as ProductServices;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
