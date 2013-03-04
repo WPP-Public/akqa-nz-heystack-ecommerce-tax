@@ -8,7 +8,7 @@
 /**
  * Tax namespace
  */
-namespace Heystack\Subsystem\Tax;
+namespace Heystack\Subsystem\Tax\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
@@ -16,9 +16,11 @@ use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-use Heystack\Subsystem\Core\ContainerExtensionConfigProcessor;
+use Heystack\Subsystem\Core\DependencyInjection\ContainerExtensionConfigProcessor;
 
 use Heystack\Subsystem\Core\Exception\ConfigurationException;
+
+use Heystack\Subsystem\Tax\Services;
 
 /**
  * Container extension for Heystack.

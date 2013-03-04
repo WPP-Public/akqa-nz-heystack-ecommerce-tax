@@ -8,29 +8,25 @@ services:
     arguments: [ @state, @event_dispatcher, @locale_service ]
     calls:
       - [ restoreState ]
+    tags:
+      - { name: ss_orm_backend.data_provider }
+      - { name: transaction.modifier }
       
   tax_handler_subscriber:
     class: %tax_handler_subscriber.class%
     arguments: [ @event_dispatcher, @tax_handler, @storage ]   
-    
-  transaction:
-    class: %transaction.class%
-    calls:
-      - [ addModifier, [ @tax_handler ] ]
+    tags:
+      - { name: event_dispatcher.subscriber }
       
-  event_dispatcher:
-    class: %event_dispatcher.class%
-    calls: 
-      - [ addSubscriber, [ @tax_handler_subscriber ] ]        
-
+  tax_transaction_schema:
+    class: %yaml_data_object_schema.class%
+    arguments: [ ecommerce-tax/config/storage/tax_transaction.yml, @state_global ]
+    tags:
+      - { name: dataobject_generator.schema }
       
-  dataobject_generator:
-    class: %dataobject_generator.class%
-    calls:
-      - [ addYamlSchema, [ ecommerce-tax/config/storage/tax.yml, 1 ] ]
-      - [ addYamlSchema, [ ecommerce-tax/config/storage/tax_transaction.yml ] ]
+  tax_schema:
+    class: %yaml_data_object_schema.class%
+    arguments: [ ecommerce-tax/config/storage/tax.yml, @state_global ]
+    tags:
+      - { name: dataobject_generator.schema, reference: true }
       
-  ss_orm_backend:
-    class: %ss_orm_backend.class%
-    calls:
-      - [ addDataProvider, [ @tax_handler ] ]
