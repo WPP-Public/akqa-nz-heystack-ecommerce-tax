@@ -1,14 +1,9 @@
 {
     "name": "heystack/ecommerce-tax",
     "type": "silverstripe-module",
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "http://packages:satis@packages.heyday.net.nz/"
-        }
-    ],
     "require": {        
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "composer/installers": "~1.0.0"
     },
     "autoload": {
         "psr-0": {
@@ -19,6 +14,5 @@
         "branch-alias": {
             "dev-master": "1.1.x-dev"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }
