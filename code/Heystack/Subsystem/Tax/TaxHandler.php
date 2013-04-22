@@ -2,6 +2,7 @@
 
 namespace Heystack\Subsystem\Tax;
 
+use Heystack\Subsystem\Core\Identifier\Identifier;
 use Heystack\Subsystem\Core\State\State;
 use Heystack\Subsystem\Core\State\StateableInterface;
 use Heystack\Subsystem\Core\ServiceStore;
@@ -48,10 +49,11 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
 
     /**
      * Returns a unique identifier
+     * @return \Heystack\Subsystem\Core\Identifier\Identifier
      */
     public function getIdentifier()
     {
-        return self::IDENTIFIER;
+        return new Identifier(self::IDENTIFIER);
     }
 
     /**
@@ -74,7 +76,7 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
 
             $productHolder = ServiceStore::getService(ProductServices::PRODUCTHOLDER);
 
-            $taxable = $transaction->getTotalWithExclusions(array($this->getIdentifier())) - $productHolder->getTaxExemptTotal();
+            $taxable = $transaction->getTotalWithExclusions(array($this->getIdentifier()->getPrimary())) - $productHolder->getTaxExemptTotal();
 
             $total = ($taxable / ($rate + 1)) * $rate;
 
