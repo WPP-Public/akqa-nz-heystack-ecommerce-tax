@@ -76,7 +76,7 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
 
             $productHolder = ServiceStore::getService(ProductServices::PRODUCTHOLDER);
 
-            $taxable = $transaction->getTotalWithExclusions(array($this->getIdentifier()->getPrimary())) - $productHolder->getTaxExemptTotal();
+            $taxable = $transaction->getTotalWithExclusions(array($this->getIdentifier()->getFull())) - $productHolder->getTaxExemptTotal();
 
             $total = ($taxable / ($rate + 1)) * $rate;
 
