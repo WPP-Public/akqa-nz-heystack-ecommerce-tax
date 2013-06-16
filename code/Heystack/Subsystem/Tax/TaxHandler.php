@@ -34,8 +34,6 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
     const TOTAL_KEY = 'total';
     const CONFIG_KEY = 'config';
 
-    protected $data = array();
-
     protected $stateService;
     protected $eventService;
     protected $localeService;
