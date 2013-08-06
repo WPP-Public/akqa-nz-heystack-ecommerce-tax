@@ -3,6 +3,7 @@
 namespace Heystack\Subsystem\Tax;
 
 use Heystack\Subsystem\Core\Identifier\Identifier;
+use Heystack\Subsystem\Core\Interfaces\HasStateServiceInterface;
 use Heystack\Subsystem\Core\State\State;
 use Heystack\Subsystem\Core\State\StateableInterface;
 use Heystack\Subsystem\Core\ServiceStore;
@@ -23,7 +24,7 @@ use Heystack\Subsystem\Core\Storage\StorableInterface;
 use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
 use Heystack\Subsystem\Core\Storage\Traits\ParentReferenceTrait;
 
-class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializable, StorableInterface
+class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializable, StorableInterface, HasStateServiceInterface
 {
     use TransactionModifierStateTrait;
     use TransactionModifierSerializeTrait;
@@ -147,4 +148,36 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
             Backend::IDENTIFIER
         );
     }
+
+    /**
+     * @param array $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param HasStateServiceInterface $eventService
+     * @return mixed
+     */
+    public function setStateService(State $stateService)
+    {
+        $this->stateService = $stateService;
+    }
+
+    public function getStateService()
+    {
+        return $this->stateService;
+    }
+
+
 }
