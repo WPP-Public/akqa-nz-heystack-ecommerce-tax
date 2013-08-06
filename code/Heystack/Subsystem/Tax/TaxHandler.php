@@ -3,6 +3,7 @@
 namespace Heystack\Subsystem\Tax;
 
 use Heystack\Subsystem\Core\Identifier\Identifier;
+use Heystack\Subsystem\Core\Interfaces\HasDataInterface;
 use Heystack\Subsystem\Core\Interfaces\HasStateServiceInterface;
 use Heystack\Subsystem\Core\State\State;
 use Heystack\Subsystem\Core\State\StateableInterface;
@@ -24,7 +25,7 @@ use Heystack\Subsystem\Core\Storage\StorableInterface;
 use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
 use Heystack\Subsystem\Core\Storage\Traits\ParentReferenceTrait;
 
-class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializable, StorableInterface, HasStateServiceInterface
+class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializable, StorableInterface, HasStateServiceInterface, HasDataInterface
 {
     use TransactionModifierStateTrait;
     use TransactionModifierSerializeTrait;
