@@ -36,30 +36,24 @@ trait TaxConfigTrait
 
             $key = strtoupper($key);
 
-            if (\Geoip::countryCode2name($key) !== null) {
+            if (is_array($value) && isset($value['Rate']) && isset($value['Type'])) {
 
-                if (is_array($value) && isset($value['Rate']) && isset($value['Type'])) {
+                if (in_array($value['Type'], array(self::$inclusiveTaxType, self::$exclusiveTaxType))) {
 
-                    if (in_array($value['Type'], array(self::$inclusiveTaxType, self::$exclusiveTaxType))) {
+                    if (is_numeric($value['Rate'])) {
 
-                        if (is_numeric($value['Rate'])) {
-
-                            $this->data[self::CONFIG_KEY][$key] = $value;
-
-                        } else {
-                            throw new ConfigurationException('Tax ' . $key . ' should have a numeric `Rate`');
-                        }
+                        $this->data[self::CONFIG_KEY][$key] = $value;
 
                     } else {
-                        throw new ConfigurationException('Tax ' . $key . ' should have a `Type` of `Exclusive` or `Inclusive`');
+                        throw new ConfigurationException('Tax ' . $key . ' should have a numeric `Rate`');
                     }
 
                 } else {
-                    throw new ConfigurationException('Tax ' . $key . ' should have an array with `Rate` & `Type` keys');
+                    throw new ConfigurationException('Tax ' . $key . ' should have a `Type` of `Exclusive` or `Inclusive`');
                 }
 
             } else {
-                throw new ConfigurationException('Tax ' . $key . ' is not a valid ISO 3166 country code');
+                throw new ConfigurationException('Tax ' . $key . ' should have an array with `Rate` & `Type` keys');
             }
 
         }
