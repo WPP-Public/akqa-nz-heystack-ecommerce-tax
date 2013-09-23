@@ -10,6 +10,7 @@
  */
 namespace Heystack\Subsystem\Tax;
 
+use Heystack\Subsystem\Core\Exception\ConfigurationException;
 use Heystack\Subsystem\Core\Identifier\Identifier;
 use Heystack\Subsystem\Core\Interfaces\HasDataInterface;
 use Heystack\Subsystem\Core\Interfaces\HasStateServiceInterface;
@@ -18,6 +19,7 @@ use Heystack\Subsystem\Core\State\StateableInterface;
 use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
 use Heystack\Subsystem\Core\Storage\StorableInterface;
 use Heystack\Subsystem\Core\Storage\Traits\ParentReferenceTrait;
+use Heystack\Subsystem\Ecommerce\Locale\Interfaces\CountryInterface;
 use Heystack\Subsystem\Ecommerce\Locale\Interfaces\LocaleServiceInterface;
 use Heystack\Subsystem\Ecommerce\Purchasable\Interfaces\PurchasableHolderInterface;
 use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
@@ -41,12 +43,19 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
 {
     use TransactionModifierStateTrait;
     use TransactionModifierSerializeTrait;
-    use TaxConfigTrait;
     use ParentReferenceTrait;
 
     const IDENTIFIER = 'taxhandler';
     const TOTAL_KEY = 'total';
     const CONFIG_KEY = 'config';
+
+    /**
+     * Constants used in the config array passed in through setter injection. Used in the yml config.
+     */
+    const RATE_CONFIG_KEY = 'Rate';
+    const TYPE_CONFIG_KEY = 'Type';
+    const INCLUSIVE_TAX_TYPE = 'Inclusive';
+    const EXCLUSIVE_TAX_TYPE = 'Exclusive';
 
     protected $stateService;
     protected $eventService;
@@ -95,11 +104,13 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
 
         if (isset($this->data[self::CONFIG_KEY][$countryCode])) {
 
-            $rate = isset($this->data[self::CONFIG_KEY][$countryCode]['Rate']) ? $this->data[self::CONFIG_KEY][$countryCode]['Rate'] : 0;
+            $rate = isset($this->data[self::CONFIG_KEY][$countryCode][self::RATE_CONFIG_KEY])
+                ? $this->data[self::CONFIG_KEY][$countryCode][self::RATE_CONFIG_KEY]
+                : 0;
 
             $taxable = $this->transaction->getTotalWithExclusions(
-                    [$this->getIdentifier()->getFull()]
-                ) - $this->purchasableHolder->getTaxExemptTotal();
+                [$this->getIdentifier()->getFull()]
+            ) - $this->purchasableHolder->getTaxExemptTotal();
 
             $total = ($taxable / ($rate + 1)) * $rate;
 
@@ -125,7 +136,9 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
 
             $countryConfig = $this->data[self::CONFIG_KEY][$countryCode];
 
-            if (isset($countryConfig['Type']) && $countryConfig['Type'] == self::$exclusiveTaxType) {
+            if (isset($countryConfig[self::TYPE_CONFIG_KEY])
+                && $countryConfig[self::TYPE_CONFIG_KEY] == self::EXCLUSIVE_TAX_TYPE
+            ) {
 
                 return TransactionModifierTypes::CHARGEABLE;
 
@@ -134,6 +147,71 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
         }
 
         return TransactionModifierTypes::NEUTRAL;
+    }
+
+    /**
+     * Sets an array of config parameters onto the data array.
+     * Checks to see if the configuration array is well formed.
+     *
+     * @param array $config
+     * @throws ConfigurationException
+     */
+    public function setConfig(array $config)
+    {
+        foreach ($config as $key => $value) {
+
+            $key = strtoupper($key);
+
+            $country = $this->localeService->getCountry(new Identifier($key));
+
+            if ($country instanceof CountryInterface) {
+
+                if (is_array($value) && isset($value[self::RATE_CONFIG_KEY]) && isset($value[self::TYPE_CONFIG_KEY])) {
+
+                    if (in_array(
+                        $value[self::TYPE_CONFIG_KEY],
+                        array(self::INCLUSIVE_TAX_TYPE, self::EXCLUSIVE_TAX_TYPE)
+                    )
+                    ) {
+
+                        if (is_numeric($value[self::RATE_CONFIG_KEY])) {
+
+                            $this->data[self::CONFIG_KEY][$key] = $value;
+
+                        } else {
+                            throw new ConfigurationException(
+                                'Tax configuration for ' . $key . ' should have a numeric `Rate`'
+                            );
+                        }
+
+                    } else {
+                        throw new ConfigurationException(
+                            'Tax configuration for ' . $key . ' should have a `Type` of `Exclusive` or `Inclusive`'
+                        );
+                    }
+
+                } else {
+                    throw new ConfigurationException(
+                        'Tax configuration for ' . $key . ' should have an array with `Rate` & `Type` keys'
+                    );
+                }
+
+            } else {
+                throw new ConfigurationException(
+                    'Tax configuration for ' . $key . ' does not match any configured country in the Locale Service'
+                );
+            }
+
+        }
+    }
+
+    /**
+     * Retrieves the configuration array
+     * @return array
+     */
+    public function getConfig()
+    {
+        return isset($this->data[self::CONFIG_KEY]) ? $this->data[self::CONFIG_KEY] : null;
     }
 
     public function getStorableData()
@@ -191,8 +269,8 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
     }
 
     /**
-     * @param HasStateServiceInterface $eventService
-     * @return mixed
+     * @param State $stateService
+     * @return mixed|void
      */
     public function setStateService(State $stateService)
     {
@@ -203,6 +281,4 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
     {
         return $this->stateService;
     }
-
-
 }
