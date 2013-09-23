@@ -1,5 +1,13 @@
 <?php
+/**
+ * This file is part of the Ecommerce-Tax package
+ *
+ * @package Ecommerce-Tax
+ */
 
+/**
+ * Tax namespace
+ */
 namespace Heystack\Subsystem\Tax;
 
 use Heystack\Subsystem\Core\Identifier\Identifier;
@@ -7,24 +15,28 @@ use Heystack\Subsystem\Core\Interfaces\HasDataInterface;
 use Heystack\Subsystem\Core\Interfaces\HasStateServiceInterface;
 use Heystack\Subsystem\Core\State\State;
 use Heystack\Subsystem\Core\State\StateableInterface;
-use Heystack\Subsystem\Core\ServiceStore;
-
+use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
+use Heystack\Subsystem\Core\Storage\StorableInterface;
+use Heystack\Subsystem\Core\Storage\Traits\ParentReferenceTrait;
+use Heystack\Subsystem\Ecommerce\Locale\Interfaces\LocaleServiceInterface;
+use Heystack\Subsystem\Ecommerce\Purchasable\Interfaces\PurchasableHolderInterface;
+use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
+use Heystack\Subsystem\Ecommerce\Transaction\Traits\TransactionModifierSerializeTrait;
+use Heystack\Subsystem\Ecommerce\Transaction\Traits\TransactionModifierStateTrait;
+use Heystack\Subsystem\Ecommerce\Transaction\TransactionModifierTypes;
 use Heystack\Subsystem\Tax\Interfaces\TaxHandlerInterface;
 use Heystack\Subsystem\Tax\Traits\TaxConfigTrait;
-
-use Heystack\Subsystem\Ecommerce\Transaction\TransactionModifierTypes;
-use Heystack\Subsystem\Ecommerce\Transaction\Traits\TransactionModifierStateTrait;
-use Heystack\Subsystem\Ecommerce\Transaction\Traits\TransactionModifierSerializeTrait;
-use Heystack\Subsystem\Ecommerce\Locale\Interfaces\LocaleServiceInterface;
-use Heystack\Subsystem\Ecommerce\Services as EcommerceServices;
-use Heystack\Subsystem\Products\Services as ProductServices;
-
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-use Heystack\Subsystem\Core\Storage\StorableInterface;
-use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
-use Heystack\Subsystem\Core\Storage\Traits\ParentReferenceTrait;
-
+/**
+ * Tax Handler
+ *
+ * Calculates the tax total for the transaction
+ *
+ * @copyright  Heyday
+ * @author Glenn Bautista <glenn@heyday.co.nz>
+ * @package Ecommerce-Tax
+ */
 class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializable, StorableInterface, HasStateServiceInterface, HasDataInterface
 {
     use TransactionModifierStateTrait;
@@ -39,12 +51,21 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
     protected $stateService;
     protected $eventService;
     protected $localeService;
+    protected $transaction;
+    protected $purchasableHolder;
 
-    public function __construct(State $stateService, EventDispatcherInterface $eventService, LocaleServiceInterface $localeService)
-    {
+    public function __construct(
+        State $stateService,
+        EventDispatcherInterface $eventService,
+        LocaleServiceInterface $localeService,
+        TransactionInterface $transaction,
+        PurchasableHolderInterface $purchasableHolder
+    ) {
         $this->stateService = $stateService;
         $this->eventService = $eventService;
         $this->localeService = $localeService;
+        $this->transaction = $transaction;
+        $this->purchasableHolder = $purchasableHolder;
     }
 
     /**
@@ -64,9 +85,11 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
         return isset($this->data[self::TOTAL_KEY]) ? $this->data[self::TOTAL_KEY] : 0;
     }
 
+    /**
+     * Updates the total tax due
+     */
     public function updateTotal()
     {
-        $transaction = ServiceStore::getService(EcommerceServices::TRANSACTION);
         $total = 0;
         $countryCode = strtoupper($this->localeService->getActiveCountry()->getCountryCode());
 
@@ -74,9 +97,9 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
 
             $rate = isset($this->data[self::CONFIG_KEY][$countryCode]['Rate']) ? $this->data[self::CONFIG_KEY][$countryCode]['Rate'] : 0;
 
-            $productHolder = ServiceStore::getService(ProductServices::PRODUCTHOLDER);
-
-            $taxable = $transaction->getTotalWithExclusions(array($this->getIdentifier()->getFull())) - $productHolder->getTaxExemptTotal();
+            $taxable = $this->transaction->getTotalWithExclusions(
+                    [$this->getIdentifier()->getFull()]
+                ) - $this->purchasableHolder->getTaxExemptTotal();
 
             $total = ($taxable / ($rate + 1)) * $rate;
 
@@ -87,6 +110,7 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
         $this->saveState();
 
         $this->eventService->dispatch(Events::TOTAL_UPDATED);
+
     }
 
     /**
@@ -115,13 +139,13 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
     public function getStorableData()
     {
 
-       return array(
-           'id' => 'Tax',
-           'parent' => true,
-           'flat' => array(
-               'Total' => $this->getTotal()
-           )
-       );
+        return array(
+            'id' => 'Tax',
+            'parent' => true,
+            'flat' => array(
+                'Total' => $this->getTotal()
+            )
+        );
 
     }
 

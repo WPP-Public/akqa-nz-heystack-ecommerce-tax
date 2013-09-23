@@ -11,6 +11,9 @@
 namespace Heystack\Subsystem\Tax\Traits;
 
 use Heystack\Subsystem\Core\Exception\ConfigurationException;
+use Heystack\Subsystem\Core\Identifier\Identifier;
+use Heystack\Subsystem\Ecommerce\Locale\Interfaces\CountryInterface;
+use Heystack\Subsystem\Ecommerce\Locale\Traits\HasLocaleServiceTrait;
 
 /**
  * Provides an implementation of setting and getting the configuration for use on a TaxHandler class
@@ -21,39 +24,51 @@ use Heystack\Subsystem\Core\Exception\ConfigurationException;
  */
 trait TaxConfigTrait
 {
+    use HasLocaleServiceTrait;
+
     public static $inclusiveTaxType = 'Inclusive';
     public static $exclusiveTaxType = 'Exclusive';
 
     /**
      * Sets an array of config parameters onto the data array.
      * Checks to see if the configuration array is well formed.
-     * @param  array      $config
+     * @param  array $config
      * @throws \Exception
      */
     public function setConfig(array $config)
     {
+        $localeService = $this->getLocaleService();
+
         foreach ($config as $key => $value) {
 
             $key = strtoupper($key);
 
-            if (is_array($value) && isset($value['Rate']) && isset($value['Type'])) {
+            $country = $localeService->getCountry(new Identifier($key));
 
-                if (in_array($value['Type'], array(self::$inclusiveTaxType, self::$exclusiveTaxType))) {
+            if ($country instanceof CountryInterface) {
 
-                    if (is_numeric($value['Rate'])) {
+                if (is_array($value) && isset($value['Rate']) && isset($value['Type'])) {
 
-                        $this->data[self::CONFIG_KEY][$key] = $value;
+                    if (in_array($value['Type'], array(self::$inclusiveTaxType, self::$exclusiveTaxType))) {
+
+                        if (is_numeric($value['Rate'])) {
+
+                            $this->data[self::CONFIG_KEY][$key] = $value;
+
+                        } else {
+                            throw new ConfigurationException('Tax configuration for ' . $key . ' should have a numeric `Rate`');
+                        }
 
                     } else {
-                        throw new ConfigurationException('Tax ' . $key . ' should have a numeric `Rate`');
+                        throw new ConfigurationException('Tax configuration for ' . $key . ' should have a `Type` of `Exclusive` or `Inclusive`');
                     }
 
                 } else {
-                    throw new ConfigurationException('Tax ' . $key . ' should have a `Type` of `Exclusive` or `Inclusive`');
+                    throw new ConfigurationException('Tax configuration for ' . $key . ' should have an array with `Rate` & `Type` keys');
                 }
 
             } else {
-                throw new ConfigurationException('Tax ' . $key . ' should have an array with `Rate` & `Type` keys');
+                throw new ConfigurationException('Tax configuration for ' . $key . ' does not match any configured country in the Locale Service');
             }
 
         }
