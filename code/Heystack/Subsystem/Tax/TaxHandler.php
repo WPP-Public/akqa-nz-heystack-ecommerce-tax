@@ -170,7 +170,7 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
 
                     if (in_array(
                         $value[self::TYPE_CONFIG_KEY],
-                        array(self::INCLUSIVE_TAX_TYPE, self::EXCLUSIVE_TAX_TYPE)
+                        [self::INCLUSIVE_TAX_TYPE, self::EXCLUSIVE_TAX_TYPE]
                     )
                     ) {
 
@@ -217,13 +217,13 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
     public function getStorableData()
     {
 
-        return array(
+        return [
             'id' => 'Tax',
             'parent' => true,
-            'flat' => array(
+            'flat' => [
                 'Total' => $this->getTotal()
-            )
-        );
+            ]
+        ];
 
     }
 
@@ -247,9 +247,9 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
 
     public function getStorableBackendIdentifiers()
     {
-        return array(
+        return [
             Backend::IDENTIFIER
-        );
+        ];
     }
 
     /**

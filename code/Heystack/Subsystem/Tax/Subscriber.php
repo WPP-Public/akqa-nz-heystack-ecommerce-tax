@@ -72,14 +72,14 @@ class Subscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            CurrencyEvents::CHANGED        => array('onUpdateTotal', 0),
-            LocaleEvents::CHANGED          => array('onUpdateTotal', 0),
-            ProductHolderEvents::UPDATED   => array('onUpdateTotal', 0),
-            VoucherEvents::TOTAL_UPDATED   => array('onUpdateTotal', 0),
-            Events::TOTAL_UPDATED          => array('onTotalUpdated', 0),
-            Backend::IDENTIFIER . '.' . TransactionEvents::STORED      => array('onTransactionStored', 0)
-        );
+        return [
+            CurrencyEvents::CHANGED        => ['onUpdateTotal', 0],
+            LocaleEvents::CHANGED          => ['onUpdateTotal', 0],
+            ProductHolderEvents::UPDATED   => ['onUpdateTotal', 0],
+            VoucherEvents::TOTAL_UPDATED   => ['onUpdateTotal', 0],
+            Events::TOTAL_UPDATED          => ['onTotalUpdated', 0],
+            Backend::IDENTIFIER . '.' . TransactionEvents::STORED      => ['onTransactionStored', 0]
+        ];
     }
 
     /**
