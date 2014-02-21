@@ -1,0 +1,7 @@
+{
+  "project_id": "Ecommerce Tax",
+  "conduit_uri": "https://phabricator.heyday.net.nz/",
+  "lint.engine.single.linter": "ArcanistPhpcsLinter",
+  "lint.engine": "ArcanistSingleLintEngine",
+  "lint.phpcs.standard": "PSR2"
+}
