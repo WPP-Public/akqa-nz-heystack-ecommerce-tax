@@ -1,22 +1,22 @@
 <?php
 
-namespace Heystack\Subsystem\Tax\Traits;
+namespace Heystack\Tax\Traits;
 
-use Heystack\Subsystem\Tax\Interfaces\TaxHandlerInterface;
+use Heystack\Tax\Interfaces\TaxHandlerInterface;
 
 /**
  * Class HasTaxHandlerTrait
- * @package Heystack\Subsystem\Tax\Traits
+ * @package Heystack\Tax\Traits
  */
 trait HasTaxHandlerTrait
 {
     /**
-     * @var \Heystack\Subsystem\Tax\Interfaces\TaxHandlerInterface
+     * @var \Heystack\Tax\Interfaces\TaxHandlerInterface
      */
     protected $taxHandler;
     
     /**
-     * @return \Heystack\Subsystem\Tax\Interfaces\TaxHandlerInterface
+     * @return \Heystack\Tax\Interfaces\TaxHandlerInterface
      */
     public function getTaxHandler()
     {
@@ -24,7 +24,7 @@ trait HasTaxHandlerTrait
     }
 
     /**
-     * @param \Heystack\Subsystem\Tax\Interfaces\TaxHandlerInterface $taxHandler
+     * @param \Heystack\Tax\Interfaces\TaxHandlerInterface $taxHandler
      * @return mixed
      */
     public function setTaxHandler(TaxHandlerInterface $taxHandler)

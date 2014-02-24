@@ -1,6 +1,6 @@
 parameters:
-  tax_handler.class: Heystack\Subsystem\Tax\TaxHandler
-  tax_handler_subscriber.class: Heystack\Subsystem\Tax\Subscriber
+  tax_handler.class: Heystack\Tax\TaxHandler
+  tax_handler_subscriber.class: Heystack\Tax\Subscriber
   
 services:
   tax_handler:

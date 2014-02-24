@@ -1,10 +1,10 @@
 <?php
 
-namespace Heystack\Subsystem\Tax\Interfaces;
+namespace Heystack\Tax\Interfaces;
 
 /**
  * Interface HasTaxHandlerInterface
- * @package Heystack\Subsystem\Tax\Interfaces
+ * @package Heystack\Tax\Interfaces
  */
 interface HasTaxHandlerInterface
 {

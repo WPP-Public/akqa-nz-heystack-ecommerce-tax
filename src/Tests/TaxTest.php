@@ -1,6 +1,6 @@
 <?php
 
-namespace Heystack\Subsystem\Vouchers\Tests;
+namespace Heystack\Vouchers\Tests;
 
 class TaxTest extends \PHPUnit_Framework_TestCase
 {

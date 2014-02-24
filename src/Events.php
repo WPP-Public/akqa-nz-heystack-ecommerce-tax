@@ -8,7 +8,7 @@
 /**
  * Shipping namespace
  */
-namespace Heystack\Subsystem\Tax;
+namespace Heystack\Tax;
 
 /**
  * Events holds constant references to triggerable dispatch events.

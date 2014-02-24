@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Heystack\Subsystem\Tax\DependencyInjection\CompilerPass;
+namespace Heystack\Tax\DependencyInjection\CompilerPass;
 
-use Heystack\Subsystem\Tax\Services;
-use Heystack\Subsystem\Core\DependencyInjection\CompilerPass\HasService;
+use Heystack\Tax\Services;
+use Heystack\Core\DependencyInjection\CompilerPass\HasService;
 
 /**
  * Class HasTaxHandler
- * @package Heystack\Subsystem\Tax\DependencyInjection\CompilerPass
+ * @package Heystack\Tax\DependencyInjection\CompilerPass
  */
 class HasTaxHandler extends HasService
 {

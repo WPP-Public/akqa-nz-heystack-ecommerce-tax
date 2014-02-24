@@ -1,8 +1,8 @@
 <?php
 
-namespace Heystack\Subsystem\Tax\Interfaces;
+namespace Heystack\Tax\Interfaces;
 
-use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionModifierInterface;
+use Heystack\Ecommerce\Transaction\Interfaces\TransactionModifierInterface;
 
 interface TaxHandlerInterface extends TransactionModifierInterface
 {

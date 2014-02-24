@@ -5,7 +5,7 @@
  * @package Ecommerce-Tax
  */
 
-namespace Heystack\Subsystem\Tax;
+namespace Heystack\Tax;
 
 /**
  * Holds constants corresponding to the services defined in the services.yml file

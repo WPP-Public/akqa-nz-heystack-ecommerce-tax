@@ -8,26 +8,26 @@
 /**
  * Tax namespace
  */
-namespace Heystack\Subsystem\Tax;
+namespace Heystack\Tax;
 
-use Heystack\Subsystem\Core\Exception\ConfigurationException;
-use Heystack\Subsystem\Core\Identifier\Identifier;
-use Heystack\Subsystem\Core\Interfaces\HasDataInterface;
-use Heystack\Subsystem\Core\Interfaces\HasStateServiceInterface;
-use Heystack\Subsystem\Core\State\State;
-use Heystack\Subsystem\Core\State\StateableInterface;
-use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
-use Heystack\Subsystem\Core\Storage\StorableInterface;
-use Heystack\Subsystem\Core\Storage\Traits\ParentReferenceTrait;
-use Heystack\Subsystem\Ecommerce\Locale\Interfaces\CountryInterface;
-use Heystack\Subsystem\Ecommerce\Locale\Interfaces\LocaleServiceInterface;
-use Heystack\Subsystem\Ecommerce\Purchasable\Interfaces\PurchasableHolderInterface;
-use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
-use Heystack\Subsystem\Ecommerce\Transaction\Traits\TransactionModifierSerializeTrait;
-use Heystack\Subsystem\Ecommerce\Transaction\Traits\TransactionModifierStateTrait;
-use Heystack\Subsystem\Ecommerce\Transaction\TransactionModifierTypes;
-use Heystack\Subsystem\Tax\Interfaces\TaxHandlerInterface;
-use Heystack\Subsystem\Tax\Traits\TaxConfigTrait;
+use Heystack\Core\Exception\ConfigurationException;
+use Heystack\Core\Identifier\Identifier;
+use Heystack\Core\Interfaces\HasDataInterface;
+use Heystack\Core\Interfaces\HasStateServiceInterface;
+use Heystack\Core\State\State;
+use Heystack\Core\State\StateableInterface;
+use Heystack\Core\Storage\Backends\SilverStripeOrm\Backend;
+use Heystack\Core\Storage\StorableInterface;
+use Heystack\Core\Storage\Traits\ParentReferenceTrait;
+use Heystack\Ecommerce\Locale\Interfaces\CountryInterface;
+use Heystack\Ecommerce\Locale\Interfaces\LocaleServiceInterface;
+use Heystack\Ecommerce\Purchasable\Interfaces\PurchasableHolderInterface;
+use Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface;
+use Heystack\Ecommerce\Transaction\Traits\TransactionModifierSerializeTrait;
+use Heystack\Ecommerce\Transaction\Traits\TransactionModifierStateTrait;
+use Heystack\Ecommerce\Transaction\TransactionModifierTypes;
+use Heystack\Tax\Interfaces\TaxHandlerInterface;
+use Heystack\Tax\Traits\TaxConfigTrait;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -79,7 +79,7 @@ class TaxHandler implements TaxHandlerInterface, StateableInterface, \Serializab
 
     /**
      * Returns a unique identifier
-     * @return \Heystack\Subsystem\Core\Identifier\Identifier
+     * @return \Heystack\Core\Identifier\Identifier
      */
     public function getIdentifier()
     {

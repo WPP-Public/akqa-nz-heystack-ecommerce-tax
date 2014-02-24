@@ -7,7 +7,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Heystack\\Subsystem\\Tax\\": "src/"
+            "Heystack\\Tax\\": "src/"
         }
     },
     "extra": {

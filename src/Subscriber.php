@@ -8,22 +8,22 @@
 /**
  * Tax namespace
  */
-namespace Heystack\Subsystem\Tax;
+namespace Heystack\Tax;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-use Heystack\Subsystem\Ecommerce\Currency\Events as CurrencyEvents;
-use Heystack\Subsystem\Ecommerce\Locale\Events as LocaleEvents;
-use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
-use Heystack\Subsystem\Products\ProductHolder\Events as ProductHolderEvents;
-use Heystack\Subsystem\Vouchers\Events as VoucherEvents;
+use Heystack\Ecommerce\Currency\Events as CurrencyEvents;
+use Heystack\Ecommerce\Locale\Events as LocaleEvents;
+use Heystack\Ecommerce\Transaction\Events as TransactionEvents;
+use Heystack\Products\ProductHolder\Events as ProductHolderEvents;
+use Heystack\Vouchers\Events as VoucherEvents;
 
-use Heystack\Subsystem\Tax\Interfaces\TaxHandlerInterface;
+use Heystack\Tax\Interfaces\TaxHandlerInterface;
 
-use Heystack\Subsystem\Core\Storage\Storage;
-use Heystack\Subsystem\Core\Storage\Event as StorageEvent;
-use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
+use Heystack\Core\Storage\Storage;
+use Heystack\Core\Storage\Event as StorageEvent;
+use Heystack\Core\Storage\Backends\SilverStripeOrm\Backend;
 
 /**
  * Handles both subscribing to events and acting on those events needed for TaxHandler to work properly
@@ -43,21 +43,21 @@ class Subscriber implements EventSubscriberInterface
 
     /**
      * Holds the TaxHandler Service
-     * @var \Heystack\Subsystem\Tax\Interfaces\TaxHandlerInterface
+     * @var \Heystack\Tax\Interfaces\TaxHandlerInterface
      */
     protected $taxService;
 
     /**
      * Holds the Storage Service
-     * @var \Heystack\Subsystem\Core\Storage\Storage
+     * @var \Heystack\Core\Storage\Storage
      */
     protected $storageService;
 
     /**
      * Creates the ShippingHandler Subscriber object
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventService
-     * @param \Heystack\Subsystem\Tax\Interfaces\TaxHandlerInterface      $taxService
-     * @param \Heystack\Subsystem\Core\Storage\Storage                    $storageService
+     * @param \Heystack\Tax\Interfaces\TaxHandlerInterface      $taxService
+     * @param \Heystack\Core\Storage\Storage                    $storageService
      */
     public function __construct(EventDispatcherInterface $eventService, TaxHandlerInterface $taxService,  Storage $storageService)
     {
@@ -102,7 +102,7 @@ class Subscriber implements EventSubscriberInterface
     /**
      * Called after the Transaction is stored.
      * Tells the storage service to store all the information held in the TaxHandler
-     * @param \Heystack\Subsystem\Core\Storage\Event $event
+     * @param \Heystack\Core\Storage\Event $event
      */
     public function onTransactionStored(StorageEvent $event)
     {
