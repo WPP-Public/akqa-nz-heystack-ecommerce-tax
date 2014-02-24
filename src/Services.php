@@ -5,9 +5,6 @@
  * @package Ecommerce-Tax
  */
 
-/**
- * Payment namespace
- */
 namespace Heystack\Subsystem\Tax;
 
 /**

@@ -6,8 +6,8 @@
         "composer/installers": "~1.0.0"
     },
     "autoload": {
-        "psr-0": {
-            "Heystack": "code/"
+        "psr-4": {
+            "Heystack\\Subsystem\\Tax\\": "src/"
         }
     },
     "extra": {
