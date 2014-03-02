@@ -5,7 +5,7 @@ parameters:
 services:
   tax_handler:
     class: %tax_handler.class%
-    arguments: [ @state, @event_dispatcher, @locale_service, @transaction, @productholder ]
+    arguments: [ @state, @event_dispatcher, @locale_service, @transaction, @purchasableholder ]
     calls:
       - [ restoreState ]
     tags:
@@ -14,7 +14,7 @@ services:
       
   tax_handler_subscriber:
     class: %tax_handler_subscriber.class%
-    arguments: [ @event_dispatcher, @tax_handler, @storage ]   
+    arguments: [ @event_dispatcher, @tax_handler, @storage ]
     tags:
       - { name: event_dispatcher.subscriber }
       

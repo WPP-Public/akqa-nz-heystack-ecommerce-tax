@@ -12,14 +12,10 @@ namespace Heystack\Tax\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
-
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-use Heystack\Core\DependencyInjection\ContainerExtensionConfigProcessor;
-
 use Heystack\Core\Exception\ConfigurationException;
-
 use Heystack\Tax\Services;
 
 /**
@@ -35,47 +31,30 @@ use Heystack\Tax\Services;
  * @package Ecommerce-Tax
  *
  */
-class ContainerExtension extends ContainerExtensionConfigProcessor implements ExtensionInterface
+class ContainerExtension implements ExtensionInterface
 {
 
     /**
      * Loads a services.yml file into a fresh container, ready to me merged
      * back into the main container
      *
-     * @param  array            $config
-     * @param  ContainerBuilder $container
-     * @return null
+     * @param  array $config
+     * @param  \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @throws \Heystack\Core\Exception\ConfigurationException
+     * @return void
      */
     public function load(array $config, ContainerBuilder $container)
     {
-        $loader = new YamlFileLoader(
+        (new YamlFileLoader(
             $container,
             new FileLocator(ECOMMERCE_TAX_BASE_PATH . '/config')
-        );
+        ))->load('services.yml');
 
-        $loader->load('services.yml');
-
-        $this->processConfig($config, $container);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * Adds the configuration for the payment handler.
-     *
-     * @param array                                                   $config
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
-     */
-    protected function processConfig(array $config, ContainerBuilder $container)
-    {
-        parent::processConfig($config, $container);
-
+        // TODO: Eventually replace this with config processor
         $config = array_pop($config);
 
-        if (isset($config['config']) &&  $container->hasDefinition(Services::TAX_HANDLER)) {
-
-           $container->getDefinition(Services::TAX_HANDLER)->addMethodCall('setConfig', [$config['config']]);
-
+        if (isset($config['config']) && $container->hasDefinition(Services::TAX_HANDLER)) {
+            $container->getDefinition(Services::TAX_HANDLER)->addMethodCall('setConfig', [$config['config']]);
         } else {
             throw new ConfigurationException('Please configure the tax subsystem on your /mysite/config/services.yml file');
         }
@@ -83,7 +62,7 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
 
     /**
      * Returns the namespace of the container extension
-     * @return type
+     * @return string
      */
     public function getNamespace()
     {
@@ -101,11 +80,10 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
 
     /**
      * Returns the container extensions alias
-     * @return type
+     * @return string
      */
     public function getAlias()
     {
         return 'tax';
     }
-
 }
