@@ -56,7 +56,7 @@ class Subscriber implements EventSubscriberInterface
      * @param \Heystack\Tax\Interfaces\TaxHandlerInterface $taxService
      * @param \Heystack\Core\Storage\Storage $storageService
      */
-    public function __construct(EventDispatcherInterface $eventService, TaxHandlerInterface $taxService,  Storage $storageService)
+    public function __construct(EventDispatcherInterface $eventService, TaxHandlerInterface $taxService, Storage $storageService)
     {
         $this->eventService = $eventService;
         $this->taxService = $taxService;
@@ -99,7 +99,7 @@ class Subscriber implements EventSubscriberInterface
     /**
      * Called after the Transaction is stored.
      * Tells the storage service to store all the information held in the TaxHandler
-     * @param \Heystack\Subsystem\Core\Storage\Event $event
+     * @param \Heystack\Core\Storage\Event $event
      */
     public function onTransactionStored(StorageEvent $event)
     {
