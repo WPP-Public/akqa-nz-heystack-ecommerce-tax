@@ -19,13 +19,15 @@ services:
       
   tax_transaction_schema:
     class: %yaml_data_object_schema.class%
-    arguments: [ ecommerce-tax/config/storage/tax_transaction.yml, @state_global ]
+    arguments: [ ecommerce-tax/config/storage/tax_transaction.yml ]
     tags:
-      - { name: dataobject_generator.schema }
+      - { name: schema }
+      - { name: autoinject, arguments: true }
       
   tax_schema:
     class: %yaml_data_object_schema.class%
-    arguments: [ ecommerce-tax/config/storage/tax.yml, @state_global ]
+    arguments: [ ecommerce-tax/config/storage/tax.yml ]
     tags:
-      - { name: dataobject_generator.schema, reference: true }
+      - { name: schema, reference: true }
+      - { name: autoinject, arguments: true }
       
