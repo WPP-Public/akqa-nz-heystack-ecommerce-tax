@@ -10,9 +10,10 @@
  */
 namespace Heystack\Tax;
 
+use Heystack\Core\State\State;
 use Heystack\Core\Storage\Backends\SilverStripeOrm\Backend;
-use Heystack\Core\Storage\Event as StorageEvent;
-use Heystack\Core\Storage\Storage;
+use Heystack\Core\Traits\HasEventServiceTrait;
+use Heystack\Core\Traits\HasStateServiceTrait;
 use Heystack\Ecommerce\Currency\Events as CurrencyEvents;
 use Heystack\Ecommerce\Locale\Events as LocaleEvents;
 use Heystack\Ecommerce\Transaction\Events as TransactionEvents;
@@ -32,11 +33,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class Subscriber implements EventSubscriberInterface
 {
-    /**
-     * Holds the Event Dispatcher Service
-     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
-     */
-    protected $eventService;
+    use HasEventServiceTrait;
+    use HasStateServiceTrait;
 
     /**
      * Holds the TaxHandler Service
@@ -45,22 +43,20 @@ class Subscriber implements EventSubscriberInterface
     protected $taxService;
 
     /**
-     * Holds the Storage Service
-     * @var \Heystack\Core\Storage\Storage
-     */
-    protected $storageService;
-
-    /**
      * Creates the ShippingHandler Subscriber object
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventService
      * @param \Heystack\Tax\Interfaces\TaxHandlerInterface $taxService
-     * @param \Heystack\Core\Storage\Storage $storageService
+     * @param \Heystack\Core\State\State $stateService
      */
-    public function __construct(EventDispatcherInterface $eventService, TaxHandlerInterface $taxService, Storage $storageService)
+    public function __construct(
+        EventDispatcherInterface $eventService,
+        TaxHandlerInterface $taxService,
+        State $stateService
+    )
     {
         $this->eventService = $eventService;
         $this->taxService = $taxService;
-        $this->storageService = $storageService;
+        $this->stateService = $stateService;
     }
 
     /**
@@ -95,20 +91,9 @@ class Subscriber implements EventSubscriberInterface
     {
         $this->eventService->dispatch(TransactionEvents::UPDATE);
     }
-
-    /**
-     * Called after the Transaction is stored.
-     * Tells the storage service to store all the information held in the TaxHandler
-     * @param \Heystack\Core\Storage\Event $event
-     */
-    public function onTransactionStored(StorageEvent $event)
+    
+    public function onTransactionStored()
     {
-
-//        $this->shippingService->setParentReference($event->getParentReference());
-//
-//        $this->storageService->process($this->shippingService);
-//
-//        $this->eventService->dispatch(Events::STORED);
+        $this->stateService->removeByKey(TaxHandler::IDENTIFIER);
     }
-
 }

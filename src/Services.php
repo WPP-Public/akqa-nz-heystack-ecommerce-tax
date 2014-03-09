@@ -18,7 +18,6 @@ final class Services
 {
     /**
      * Holds the identfier of the tax handler
-     * For use with the ServiceStore::getService($identifier) call
      */
     const TAX_HANDLER = 'tax_handler';
 }

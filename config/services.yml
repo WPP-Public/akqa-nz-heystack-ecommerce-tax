@@ -5,16 +5,15 @@ parameters:
 services:
   tax_handler:
     class: %tax_handler.class%
-    arguments: [ @state, @event_dispatcher, @locale_service, @transaction, @purchasableholder ]
-    calls:
-      - [ restoreState ]
+    arguments: [ @state, @event_dispatcher, @locale_service, @purchasableholder, @currency_service ]
     tags:
-      - { name: ss_orm_backend.data_provider }
+      - { name: ss_orm_backend.reference_data_provider }
       - { name: transaction.modifier }
+      - { name: state.restore }
       
   tax_handler_subscriber:
     class: %tax_handler_subscriber.class%
-    arguments: [ @event_dispatcher, @tax_handler, @storage ]
+    arguments: [ @event_dispatcher, @tax_handler, @state ]
     tags:
       - { name: event_dispatcher.subscriber }
       
