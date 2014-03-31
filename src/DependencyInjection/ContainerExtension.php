@@ -10,13 +10,13 @@
  */
 namespace Heystack\Tax\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-
 use Heystack\Core\Exception\ConfigurationException;
 use Heystack\Tax\Services;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
+
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 /**
  * Container extension for Heystack.

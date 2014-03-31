@@ -3,8 +3,8 @@
 
 namespace Heystack\Tax\DependencyInjection\CompilerPass;
 
-use Heystack\Tax\Services;
 use Heystack\Core\DependencyInjection\CompilerPass\HasService;
+use Heystack\Tax\Services;
 
 /**
  * Class HasTaxHandler
