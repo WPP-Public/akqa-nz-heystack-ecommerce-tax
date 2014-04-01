@@ -1,13 +1,5 @@
 <?php
-/**
- * This file is part of the Ecommerce-Tax package
- *
- * @package Ecommerce-Tax
- */
 
-/**
- * Tax namespace
- */
 namespace Heystack\Tax;
 
 use Heystack\Core\State\State;
@@ -41,6 +33,8 @@ class Subscriber implements EventSubscriberInterface
      * @var \Heystack\Tax\Interfaces\TaxHandlerInterface
      */
     protected $taxService;
+    
+    protected $currencyChanging;
 
     /**
      * Creates the ShippingHandler Subscriber object
@@ -66,12 +60,14 @@ class Subscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            CurrencyEvents::CHANGED => ['onUpdateTotal', 0],
-            LocaleEvents::CHANGED => ['onUpdateTotal', 0],
-            PurchasableHolderEvents::UPDATED => ['onUpdateTotal', 0],
-            VoucherEvents::TOTAL_UPDATED => ['onUpdateTotal', 0],
-            Events::TOTAL_UPDATED => ['onTotalUpdated', 0],
-            Backend::IDENTIFIER . '.' . TransactionEvents::STORED => ['onTransactionStored', 0]
+            // Low priority because its value derives from other totals
+            CurrencyEvents::CHANGED                                          => ['onCurrencyChanged', -10],
+            LocaleEvents::CHANGED                                            => ['onUpdateTotal', -10],
+            PurchasableHolderEvents::PURCHASABLE_ADDED                       => ['onUpdateTotal', -10],
+            PurchasableHolderEvents::PURCHASABLE_REMOVED                     => ['onUpdateTotal', -10],
+            PurchasableHolderEvents::PURCHASABLE_CHANGED                     => ['onUpdateTotal', -10],
+            VoucherEvents::TOTAL_UPDATED                                     => ['onUpdateTotal', -10],
+            sprintf('%s.%s', Backend::IDENTIFIER, TransactionEvents::STORED) => ['onTransactionStored', 0]
         ];
     }
 
@@ -82,6 +78,13 @@ class Subscriber implements EventSubscriberInterface
     {
         $this->taxService->updateTotal();
     }
+    
+    public function onCurrencyChanged()
+    {
+        $this->currencyChanging = true;
+        $this->taxService->updateTotal();
+        $this->currencyChanging = true;
+    }
 
     /**
      * Called after the TaxHandler's total is updated.
@@ -89,7 +92,9 @@ class Subscriber implements EventSubscriberInterface
      */
     public function onTotalUpdated()
     {
-        $this->eventService->dispatch(TransactionEvents::UPDATE);
+        if (!$this->currencyChanging) {
+            $this->eventService->dispatch(TransactionEvents::UPDATE);
+        }
     }
     
     public function onTransactionStored()
