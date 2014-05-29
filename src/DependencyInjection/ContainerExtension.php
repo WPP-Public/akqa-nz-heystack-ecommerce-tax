@@ -55,8 +55,6 @@ class ContainerExtension implements ExtensionInterface
 
         if (isset($config['config']) && $container->hasDefinition(Services::TAX_HANDLER)) {
             $container->getDefinition(Services::TAX_HANDLER)->addMethodCall('setConfig', [$config['config']]);
-        } else {
-            throw new ConfigurationException('Please configure the tax subsystem on your /mysite/config/services.yml file');
         }
     }
 
