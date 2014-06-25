@@ -11,7 +11,6 @@ use Heystack\Ecommerce\Locale\Events as LocaleEvents;
 use Heystack\Ecommerce\Transaction\Events as TransactionEvents;
 use Heystack\Purchasable\PurchasableHolder\Events as PurchasableHolderEvents;
 use Heystack\Tax\Interfaces\TaxHandlerInterface;
-use Heystack\Vouchers\Events as VoucherEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -66,7 +65,6 @@ class Subscriber implements EventSubscriberInterface
             PurchasableHolderEvents::PURCHASABLE_ADDED                       => ['onUpdateTotal', -10],
             PurchasableHolderEvents::PURCHASABLE_REMOVED                     => ['onUpdateTotal', -10],
             PurchasableHolderEvents::PURCHASABLE_CHANGED                     => ['onUpdateTotal', -10],
-            VoucherEvents::TOTAL_UPDATED                                     => ['onUpdateTotal', -10],
             sprintf('%s.%s', Backend::IDENTIFIER, TransactionEvents::STORED) => ['onTransactionStored', 0]
         ];
     }
