@@ -269,12 +269,11 @@ class TaxHandler
      */
     public function getStorableData()
     {
-        $total = $this->getTotal();
         return [
             'id' => self::IDENTIFIER,
             'parent' => true,
             'flat' => [
-                'Total' => $total->getAmount() / $total->getCurrency()->getSubUnit()
+                'Total' => \Heystack\Ecommerce\convertMoneyToString($this->getTotal())
             ]
         ];
     }
