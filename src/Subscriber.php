@@ -2,16 +2,18 @@
 
 namespace Heystack\Tax;
 
+use Heystack\Core\EventDispatcher;
 use Heystack\Core\State\State;
 use Heystack\Core\Storage\Backends\SilverStripeOrm\Backend;
 use Heystack\Core\Traits\HasEventServiceTrait;
 use Heystack\Core\Traits\HasStateServiceTrait;
+use Heystack\Ecommerce\Currency\Event\CurrencyEvent;
 use Heystack\Ecommerce\Currency\Events as CurrencyEvents;
 use Heystack\Ecommerce\Locale\Events as LocaleEvents;
 use Heystack\Ecommerce\Transaction\Events as TransactionEvents;
 use Heystack\Purchasable\PurchasableHolder\Events as PurchasableHolderEvents;
 use Heystack\Tax\Interfaces\TaxHandlerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -37,12 +39,12 @@ class Subscriber implements EventSubscriberInterface
 
     /**
      * Creates the ShippingHandler Subscriber object
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventService
+     * @param \Heystack\Core\EventDispatcher $eventService
      * @param \Heystack\Tax\Interfaces\TaxHandlerInterface $taxService
      * @param \Heystack\Core\State\State $stateService
      */
     public function __construct(
-        EventDispatcherInterface $eventService,
+        EventDispatcher $eventService,
         TaxHandlerInterface $taxService,
         State $stateService
     )
@@ -71,13 +73,23 @@ class Subscriber implements EventSubscriberInterface
 
     /**
      * Called to update the TaxHandler's total
+     * @param \Symfony\Component\EventDispatcher\Event $event
+     * @param string $eventName
+     * @param \Heystack\Core\EventDispatcher $dispatcher
+     * @return void
      */
-    public function onUpdateTotal()
+    public function onUpdateTotal(Event $event, $eventName, EventDispatcher $dispatcher)
     {
         $this->taxService->updateTotal();
     }
-    
-    public function onCurrencyChanged()
+
+    /**
+     * @param \Heystack\Ecommerce\Currency\Event\CurrencyEvent $currencyEvent
+     * @param string $eventName
+     * @param \Heystack\Core\EventDispatcher $dispatcher
+     * @return void
+     */
+    public function onCurrencyChanged(CurrencyEvent $currencyEvent, $eventName, EventDispatcher $dispatcher)
     {
         $this->currencyChanging = true;
         $this->taxService->updateTotal();
@@ -87,15 +99,25 @@ class Subscriber implements EventSubscriberInterface
     /**
      * Called after the TaxHandler's total is updated.
      * Tells the transaction to update its total.
+     * @param \Symfony\Component\EventDispatcher\Event $event
+     * @param string $eventName
+     * @param \Heystack\Core\EventDispatcher $dispatcher
+     * @return void
      */
-    public function onTotalUpdated()
+    public function onTotalUpdated(Event $event, $eventName, EventDispatcher $dispatcher)
     {
         if (!$this->currencyChanging) {
             $this->eventService->dispatch(TransactionEvents::UPDATE);
         }
     }
-    
-    public function onTransactionStored()
+
+    /**
+     * @param \Symfony\Component\EventDispatcher\Event $event
+     * @param string $eventName
+     * @param \Heystack\Core\EventDispatcher $dispatcher
+     * @return void
+     */
+    public function onTransactionStored(Event $event, $eventName, EventDispatcher $dispatcher)
     {
         $this->stateService->removeByKey(TaxHandler::IDENTIFIER);
     }

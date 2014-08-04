@@ -25,7 +25,7 @@ trait HasTaxHandlerTrait
 
     /**
      * @param \Heystack\Tax\Interfaces\TaxHandlerInterface $taxHandler
-     * @return mixed
+     * @return void
      */
     public function setTaxHandler(TaxHandlerInterface $taxHandler)
     {

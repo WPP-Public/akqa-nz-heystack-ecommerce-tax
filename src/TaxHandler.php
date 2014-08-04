@@ -93,11 +93,11 @@ class TaxHandler
     protected $config = [];
 
     /**
-     * @param State $stateService
-     * @param EventDispatcherInterface $eventService
-     * @param LocaleServiceInterface $localeService
-     * @param PurchasableHolderInterface $purchasableHolder
-     * @param CurrencyServiceInterface $currencyService
+     * @param \Heystack\Core\State\State $stateService
+     * @param \Heystack\Core\EventDispatcher $eventService
+     * @param \Heystack\Ecommerce\Locale\Interfaces\LocaleServiceInterface $localeService
+     * @param \Heystack\Ecommerce\Purchasable\Interfaces\PurchasableHolderInterface $purchasableHolder
+     * @param \Heystack\Ecommerce\Currency\Interfaces\CurrencyServiceInterface $currencyService
      */
     public function __construct(
         State $stateService,
@@ -125,6 +125,7 @@ class TaxHandler
 
     /**
      * Returns the total value of the TransactionModifier for use in the Transaction
+     * @return \SebastianBergmann\Money\Money
      */
     public function getTotal()
     {
@@ -133,6 +134,7 @@ class TaxHandler
 
     /**
      * Updates the total tax due
+     * @return void
      */
     public function updateTotal()
     {
@@ -307,6 +309,7 @@ class TaxHandler
     
     /**
      * Saves the data array on the State service
+     * @return void
      */
     public function saveState()
     {
@@ -314,6 +317,7 @@ class TaxHandler
     }
     /**
      * Uses the State service to restore the data array
+     * @return void
      */
     public function restoreState()
     {
@@ -331,7 +335,8 @@ class TaxHandler
     }
 
     /**
-     * @param $data
+     * @param mixed $data
+     * @return void
      */
     public function setData($data)
     {
