@@ -139,23 +139,34 @@ class TaxHandler
     public function updateTotal()
     {
         $total = $this->currencyService->getZeroMoney();
-        
+
         $countryCode = strtoupper($this->localeService->getActiveCountry()->getCountryCode());
 
+        $taxable = $this->transaction->getTotalWithExclusions(
+            [$this->getIdentifier()->getFull()]
+        );
+
         if (isset($this->config[$countryCode])) {
-            
+
             if (isset($this->config[$countryCode][self::RATE_CONFIG_KEY])) {
                 $rate = $this->config[$countryCode][self::RATE_CONFIG_KEY];
             } else {
                 $rate = 0;
             }
 
-            $taxable = $this->transaction->getTotalWithExclusions(
-                [$this->getIdentifier()->getFull()]
-            );
-            
-            // TODO: Migrate to ratios
-            $total = $taxable->subtract($this->getTaxExemptTotal())->multiply($rate / ($rate + 1));
+            if (isset($this->config[$countryCode][self::TYPE_CONFIG_KEY])
+                && $this->config[$countryCode][self::TYPE_CONFIG_KEY] == self::EXCLUSIVE_TAX_TYPE
+            ) {
+
+                $total = $taxable->subtract($this->getTaxExemptTotal())->multiply($rate);
+
+            } else if (isset($this->config[$countryCode][self::TYPE_CONFIG_KEY])
+                && $this->config[$countryCode][self::TYPE_CONFIG_KEY] == self::INCLUSIVE_TAX_TYPE
+            ) {
+                // TODO: Migrate to ratios
+                $total = $taxable->subtract($this->getTaxExemptTotal())->multiply($rate / ($rate + 1));
+            }
+
         }
 
         $this->total = $total;
